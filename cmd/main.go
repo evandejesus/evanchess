@@ -21,9 +21,7 @@ func init() {
 
 func main() {
 	fmt.Println("evanchess c. 2020")
-	fenStr := "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+	// fenStr := "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
-	board := board.LoadPositionFromFen(fenStr)
-	fmt.Println(board)
-	// board.CreateGraphicalBoard()
+	board.DrawBoard(board.Emerald, 60)
 }

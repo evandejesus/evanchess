@@ -17,6 +17,10 @@ RESET  := $(shell tput -Txterm sgr0)
 
 all: help
 
+## Run:
+run: 
+	GO111MODULE=on $(GOCMD) run ./cmd/*
+
 ## Build:
 build: ## Build your project and put the output binary in bin/
 	mkdir -p bin
