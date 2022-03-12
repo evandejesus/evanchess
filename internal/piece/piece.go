@@ -1,13 +1,19 @@
 package piece
 
+/*
+00 000
+   ^ 	0 - 6 indicates piece type
+^		1 for white, 2 for black
+*/
+
 const (
-	None   int = iota
-	King       // 1
-	Pawn       // 2
-	Knight     // 3
-	Bishop     // 4
-	Rook       // 5
-	Queen      // 6
+	None int = iota
+	King
+	Pawn
+	Knight
+	Bishop
+	Rook
+	Queen
 
 	White int = 8
 	Black int = 16

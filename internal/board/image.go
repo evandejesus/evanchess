@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/evandejesus/evanchess/internal/piece"
+	"github.com/evandejesus/evanchess/internal/projectpath"
 )
 
 var size int = 60
@@ -20,9 +21,9 @@ func Square(x, y, length int) *image.Rectangle {
 func DrawBoard(board Board, theme Theme) {
 	boardPng := image.NewRGBA(image.Rect(0, 0, 8*size, 8*size))
 
-	// rows
+	// ranks
 	for i := 0; i < 8; i++ {
-		// columns
+		// files
 		for j := 0; j < 8; j++ {
 			square := Square(size*j, size*i, size)
 			var bg color.Color
@@ -34,11 +35,12 @@ func DrawBoard(board Board, theme Theme) {
 			draw.Draw(boardPng, square.Bounds(), &image.Uniform{bg}, image.Point{}, draw.Src)
 
 			// render board in reverse order
-			pieceFilepath := getFilepathFromInt(board.squares[63-(8*i+(7-j))])
-			if pieceFilepath == "" {
+			pieceVal := board.squares[63-(8*i+(7-j))]
+			if pieceVal == 0 {
 				continue
 			}
-			pieceFile, err := os.Open("assets/" + pieceFilepath)
+			pieceFilepath := projectpath.Root + "/assets/" + getFilepathFromInt(pieceVal)
+			pieceFile, err := os.Open(pieceFilepath)
 			if err != nil {
 				panic(err)
 			}
@@ -51,7 +53,7 @@ func DrawBoard(board Board, theme Theme) {
 			draw.Draw(boardPng, square.Bounds(), piece, image.Point{}, draw.Over)
 		}
 	}
-	f, err := os.Create("_output/board.png")
+	f, err := os.Create(OutputFilepath())
 	if err != nil {
 		panic(err)
 	}
@@ -60,7 +62,9 @@ func DrawBoard(board Board, theme Theme) {
 }
 
 func getFilepathFromInt(val int) (pieceFilepath string) {
-	isWhite, pieceType := IntToPiece(val)
+	isWhite := val>>3 == 1
+	pieceType := val & 7
+
 	if pieceType == 0 {
 		pieceFilepath = ""
 	} else if pieceType == piece.King && isWhite {
@@ -90,4 +94,8 @@ func getFilepathFromInt(val int) (pieceFilepath string) {
 	}
 
 	return pieceFilepath
+}
+
+func OutputFilepath() string {
+	return projectpath.Root + "/_output/board.png"
 }

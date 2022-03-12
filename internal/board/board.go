@@ -46,15 +46,3 @@ func LoadPositionFromFen(fen string) (board Board) {
 	}
 	return board
 }
-
-func CreateBoard() {
-	var board Board
-	board.squares[0] = piece.White | piece.King
-}
-
-func IntToPiece(i int) (isWhite bool, pieceType int) {
-	isWhite = i>>3 == 1
-	pieceType = i & 7
-
-	return isWhite, pieceType
-}

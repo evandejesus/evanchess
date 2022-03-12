@@ -21,7 +21,7 @@ func init() {
 
 func main() {
 	fmt.Println("evanchess c. 2022")
-	fenStr := "r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3"
+	fenStr := "5rk1/4R1pp/3q1p2/p1p2P2/P3Q2P/5p2/2P2PPK/8 w - - 0 34"
 
 	pos := board.LoadPositionFromFen(fenStr)
 	// pos.PrintBoard()

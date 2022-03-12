@@ -1,7 +1,9 @@
 package board
 
 import (
+	"errors"
 	"image"
+	"os"
 	"reflect"
 	"testing"
 )
@@ -45,6 +47,18 @@ func TestSquare(t *testing.T) {
 	}
 }
 
+func setup(t testing.TB) func(t testing.TB) {
+	if _, err := os.Stat("/_output/board.png"); err == nil {
+		if err := os.Remove("_output/board.png"); err != nil {
+			t.Error(err.Error())
+		}
+	}
+
+	return func(t testing.TB) {
+		// teardown
+	}
+}
+
 func TestDrawBoard(t *testing.T) {
 	type args struct {
 		board Board
@@ -54,11 +68,55 @@ func TestDrawBoard(t *testing.T) {
 		name string
 		args args
 	}{
-		// TODO: Add test cases.
+		{
+			name: "fuck you",
+			args: args{
+				board: LoadPositionFromFen("5rk1/4R1pp/3q1p2/p1p2P2/P3Q2P/5p2/2P2PPK/8 w - - 0 34"),
+				theme: Sandcastle,
+			},
+		},
 	}
+
+	teardown := setup(t)
+	defer teardown(t)
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			DrawBoard(tt.args.board, tt.args.theme)
 		})
 	}
+
+	t.Run("created file", func(t *testing.T) {
+		if _, err := os.Stat(OutputFilepath()); errors.Is(err, os.ErrNotExist) {
+			t.Error(err.Error())
+			t.Errorf("file \"" + OutputFilepath() + "\" not created")
+		}
+	})
+}
+
+func Test_getFilepathFromInt(t *testing.T) {
+	type args struct {
+		val int
+	}
+	tests := []struct {
+		name              string
+		args              args
+		wantPieceFilepath string
+	}{
+		{
+			name: "none",
+			args: args{
+				val: 0,
+			},
+			wantPieceFilepath: "",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if gotPieceFilepath := getFilepathFromInt(tt.args.val); gotPieceFilepath != tt.wantPieceFilepath {
+				t.Errorf("getFilepathFromInt() = %v, want %v", gotPieceFilepath, tt.wantPieceFilepath)
+			}
+		})
+	}
+
 }
