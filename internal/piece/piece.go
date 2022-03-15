@@ -22,6 +22,9 @@ const (
 func IsColor(square int, color int) bool {
 	return square&color == color
 }
+func IsOpponentColor(square int, color int) bool {
+	return square != 0 && square&color == 0
+}
 
 func GetPieceType(square int) int {
 	return square & 7

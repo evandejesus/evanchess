@@ -10,6 +10,7 @@ import (
 
 type Board struct {
 	Squares     [64]int
+	moves       []Move
 	ColorToMove int
 }
 
@@ -55,5 +56,7 @@ func LoadPositionFromFen(fen string) (board Board, err error) {
 			}
 		}
 	}
+	GenerateMoves(&board)
+
 	return board, nil
 }
