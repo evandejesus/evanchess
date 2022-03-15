@@ -18,16 +18,14 @@ func Square(x, y, length int) *image.Rectangle {
 	return &square
 }
 
-func DrawBoard(board Board, theme Theme) {
+func DrawBoard(board Board, theme Theme) error {
 	boardPng := image.NewRGBA(image.Rect(0, 0, 8*size, 8*size))
 
-	// ranks
-	for i := 0; i < 8; i++ {
-		// files
-		for j := 0; j < 8; j++ {
-			square := Square(size*j, size*i, size)
+	for file := 0; file < 8; file++ {
+		for rank := 0; rank < 8; rank++ {
+			square := Square(size*rank, size*file, size)
 			var bg color.Color
-			if (i+j)%2 == 0 {
+			if (file+rank)%2 == 0 {
 				bg = theme.light
 			} else {
 				bg = theme.dark
@@ -35,35 +33,37 @@ func DrawBoard(board Board, theme Theme) {
 			draw.Draw(boardPng, square.Bounds(), &image.Uniform{bg}, image.Point{}, draw.Src)
 
 			// render board in reverse order
-			pieceVal := board.squares[63-(8*i+(7-j))]
+			pieceVal := board.Squares[63-(8*file+(7-rank))]
 			if pieceVal == 0 {
 				continue
 			}
 			pieceFilepath := projectpath.Root + "/assets/" + getFilepathFromInt(pieceVal)
 			pieceFile, err := os.Open(pieceFilepath)
 			if err != nil {
-				panic(err)
+				return err
 			}
 			defer pieceFile.Close()
 
 			piece, _, err := image.Decode(pieceFile)
 			if err != nil {
-				panic(err)
+				return err
 			}
 			draw.Draw(boardPng, square.Bounds(), piece, image.Point{}, draw.Over)
 		}
 	}
 	f, err := os.Create(OutputFilepath())
 	if err != nil {
-		panic(err)
+		return err
 	}
 	defer f.Close()
 	png.Encode(f, boardPng)
+
+	return nil
 }
 
-func getFilepathFromInt(val int) (pieceFilepath string) {
-	isWhite := val>>3 == 1
-	pieceType := val & 7
+func getFilepathFromInt(square int) (pieceFilepath string) {
+	isWhite := piece.IsColor(square, piece.White)
+	pieceType := piece.GetPieceType(square)
 
 	if pieceType == 0 {
 		pieceFilepath = ""

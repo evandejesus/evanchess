@@ -18,3 +18,16 @@ const (
 	White int = 8
 	Black int = 16
 )
+
+func IsColor(square int, color int) bool {
+	return square&color == color
+}
+
+func GetPieceType(square int) int {
+	return square & 7
+}
+
+func IsSlidingPiece(square int) bool {
+	p := GetPieceType(square)
+	return p == Queen || p == Rook || p == Bishop
+}

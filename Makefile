@@ -30,6 +30,9 @@ clean: ## Remove build related file
 	rm -fr ./bin
 	rm -f ./junit-report.xml checkstyle-report.xml ./coverage.xml ./profile.cov yamllint-checkstyle.xml
 
+vet: 
+	GO111MODULE=on $(GOCMD) vet ./...
+
 vendor: ## Copy of all packages needed to support builds and tests in the vendor directory
 	$(GOCMD) mod vendor
 

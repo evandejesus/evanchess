@@ -1,6 +1,7 @@
 package board
 
 import (
+	"errors"
 	"strings"
 	"unicode"
 
@@ -8,10 +9,11 @@ import (
 )
 
 type Board struct {
-	squares [64]int
+	Squares     [64]int
+	ColorToMove int
 }
 
-func LoadPositionFromFen(fen string) (board Board) {
+func LoadPositionFromFen(fen string) (board Board, err error) {
 	pieceTypeFromSymbol := map[rune]int{
 		'k': piece.King,
 		'r': piece.Rook,
@@ -19,6 +21,12 @@ func LoadPositionFromFen(fen string) (board Board) {
 		'n': piece.Knight,
 		'q': piece.Queen,
 		'p': piece.Pawn,
+	}
+
+	if color := strings.Split(fen, " ")[1]; color == "w" {
+		board.ColorToMove = piece.White
+	} else if color == "b" {
+		board.ColorToMove = piece.Black
 	}
 
 	fenBoard := strings.Split(fen, " ")[0]
@@ -39,10 +47,13 @@ func LoadPositionFromFen(fen string) (board Board) {
 					pieceColor = piece.Black
 				}
 				pieceType := pieceTypeFromSymbol[unicode.ToLower(char)]
-				board.squares[rank*8+file] = pieceType | pieceColor
+				if pieceType == 0 {
+					return board, errors.New("invalid fen character")
+				}
+				board.Squares[rank*8+file] = pieceType | pieceColor
 				file += 1
 			}
 		}
 	}
-	return board
+	return board, nil
 }

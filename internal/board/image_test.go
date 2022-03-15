@@ -64,14 +64,15 @@ func TestDrawBoard(t *testing.T) {
 		board Board
 		theme Theme
 	}
+	pos, _ := LoadPositionFromFen("5rk1/4R1pp/3q1p2/p1p2P2/P3Q2P/5p2/2P2PPK/8 w - - 0 34")
 	tests := []struct {
 		name string
 		args args
 	}{
 		{
-			name: "fuck you",
+			name: "random fen",
 			args: args{
-				board: LoadPositionFromFen("5rk1/4R1pp/3q1p2/p1p2P2/P3Q2P/5p2/2P2PPK/8 w - - 0 34"),
+				board: pos,
 				theme: Sandcastle,
 			},
 		},
@@ -85,6 +86,7 @@ func TestDrawBoard(t *testing.T) {
 		})
 	}
 
+	// board image successfully created
 	t.Run("created file", func(t *testing.T) {
 		if _, err := os.Stat(OutputFilepath()); errors.Is(err, os.ErrNotExist) {
 			t.Error(err.Error())
