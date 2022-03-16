@@ -1,7 +1,12 @@
 package board
 
 import (
+	"bufio"
+	"fmt"
+	"os"
+
 	"github.com/evandejesus/evanchess/internal/piece"
+	"github.com/evandejesus/evanchess/internal/projectpath"
 )
 
 var directionOffsets = []int{8, -8, -1, 1, 7, -7, 9, -9}
@@ -44,10 +49,35 @@ func GenerateMoves(board *Board) {
 			if piece.IsSlidingPiece(p) {
 				generateSlidingMoves(board, i, p)
 			} else if piece.IsPieceType(p, piece.Pawn) {
-
+				// board.Squares[i] = piece.Queen |
+				generatePawnMoves(board, i, p)
 			}
 		}
 	}
+	PrintMoves(board.Moves)
+}
+
+func PrintMoves(moves []Move) {
+	f, err := os.Create(fmt.Sprintf("%s/_output/moves.log", projectpath.Root))
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+
+	w := bufio.NewWriter(f)
+	for _, move := range moves {
+		str := fmt.Sprintf("%c%d-%c%d\n", 97+move.startSquare%8, 1+move.startSquare/8,
+			97+move.targetSquare%8, 1+move.targetSquare/8)
+		w.WriteString(str)
+	}
+	w.Flush()
+}
+
+func generatePawnMoves(board *Board, startSquare, p int) {
+	// var pawnMoves []Move
+	// color := board.ColorToMove
+	// var left, right, forward int
+
 }
 
 func generateSlidingMoves(board *Board, startSquare, p int) {
@@ -76,7 +106,6 @@ func generateSlidingMoves(board *Board, startSquare, p int) {
 			if piece.IsColor(pieceOnTargetSquare, board.ColorToMove) {
 				break
 			}
-			// moves = append(moves, Move{startSquare: startSquare, targetSquare: targetSquare})
 			slidingMoves = append(slidingMoves, Move{startSquare: startSquare, targetSquare: targetSquare})
 
 			// stop looking if enemy piece is in the way

@@ -115,7 +115,7 @@ func Test_getFilepathFromInt(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if gotPieceFilepath := getFilepathFromInt(tt.args.val); gotPieceFilepath != tt.wantPieceFilepath {
+			if gotPieceFilepath := pieceFilepathFromSquare(tt.args.val); gotPieceFilepath != tt.wantPieceFilepath {
 				t.Errorf("getFilepathFromInt() = %v, want %v", gotPieceFilepath, tt.wantPieceFilepath)
 			}
 		})

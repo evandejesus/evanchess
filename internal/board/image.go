@@ -1,6 +1,7 @@
 package board
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
@@ -37,7 +38,7 @@ func DrawBoard(board Board, theme Theme) error {
 			if pieceVal == 0 {
 				continue
 			}
-			pieceFilepath := projectpath.Root + "/assets/" + getFilepathFromInt(pieceVal)
+			pieceFilepath := pieceFilepathFromSquare(pieceVal)
 			pieceFile, err := os.Open(pieceFilepath)
 			if err != nil {
 				return err
@@ -61,7 +62,7 @@ func DrawBoard(board Board, theme Theme) error {
 	return nil
 }
 
-func getFilepathFromInt(square int) (pieceFilepath string) {
+func pieceFilepathFromSquare(square int) (pieceFilepath string) {
 	isWhite := piece.IsColor(square, piece.White)
 	pieceType := piece.GetPieceType(square)
 
@@ -93,9 +94,9 @@ func getFilepathFromInt(square int) (pieceFilepath string) {
 		pieceFilepath = "Chess_bdt60.png"
 	}
 
-	return pieceFilepath
+	return fmt.Sprintf("%s/assets/%s", projectpath.Root, pieceFilepath)
 }
 
 func OutputFilepath() string {
-	return projectpath.Root + "/_output/board.png"
+	return fmt.Sprintf("%s/_output/board.png", projectpath.Root)
 }

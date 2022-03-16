@@ -23,10 +23,19 @@ func main() {
 	// reader := bufio.NewReader(os.Stdin)
 
 	fmt.Println("evanchess c. 2022")
-
-	// fen := "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-	// fen := "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2"
-	fen := "8/2p1N1R1/1Pn1p3/1b6/8/2p1B2K/pqP1k3/1Qb5 b - - 1 1"
+	fens := []string{
+		/* starting position */
+		"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+		/* e4 e5 */
+		"rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2",
+		/* 16/32 */
+		"8/2p1N1R1/1Pn1p3/1b6/8/2p1B2K/pqP1k3/1Qb5 b - - 1 1",
+		/* 27/32 */
+		"3r4/PPk4p/r4p1P/bP6/3pRK2/np1pp3/p1qn1PBP/Nb1NR3 w - - 0 1",
+		/* study */
+		"8/8/7p/3KNN1k/2p4p/8/3P2p1/8 w - - 0 1",
+	}
+	fen := fens[1]
 
 	pos, err := board.LoadPositionFromFen(fen)
 	if err != nil {
