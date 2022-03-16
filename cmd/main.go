@@ -34,14 +34,18 @@ func main() {
 		"3r4/PPk4p/r4p1P/bP6/3pRK2/np1pp3/p1qn1PBP/Nb1NR3 w - - 0 1",
 		/* study */
 		"8/8/7p/3KNN1k/2p4p/8/3P2p1/8 w - - 0 1",
+		/* scandinavian */
+		"rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2",
+		/* random pawns */
+		"rnbqkbnr/p1p1pppp/8/1p1p4/P3P3/8/1PPP1PPP/RNBQKBNR w KQkq b6 0 3",
 	}
-	fen := fens[1]
+	fen := fens[2]
 
 	pos, err := board.LoadPositionFromFen(fen)
 	if err != nil {
 		panic(err)
 	}
-	if err = board.DrawBoard(pos, board.Sandcastle); err != nil {
+	if err = board.DrawBoard(pos, board.Classic); err != nil {
 		panic(err)
 	} else {
 		// board.GenerateMoves(&pos)
