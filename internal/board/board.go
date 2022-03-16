@@ -10,7 +10,7 @@ import (
 
 type Board struct {
 	Squares     [64]int
-	moves       []Move
+	Moves       []Move
 	ColorToMove int
 }
 

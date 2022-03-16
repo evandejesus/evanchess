@@ -43,6 +43,8 @@ func GenerateMoves(board *Board) {
 		if piece.IsColor(p, board.ColorToMove) {
 			if piece.IsSlidingPiece(p) {
 				generateSlidingMoves(board, i, p)
+			} else if piece.IsPieceType(p, piece.Pawn) {
+
 			}
 		}
 	}
@@ -52,13 +54,13 @@ func generateSlidingMoves(board *Board, startSquare, p int) {
 	var slidingMoves []Move
 
 	var startDirIndex, endDirIndex int
-	if piece.GetPieceType(p) == piece.Bishop {
+	if piece.IsPieceType(p, piece.Bishop) {
 		startDirIndex = 4
 	} else {
 		startDirIndex = 0
 	}
 
-	if piece.GetPieceType(p) == piece.Rook {
+	if piece.IsPieceType(p, piece.Rook) {
 		endDirIndex = 4
 	} else {
 		endDirIndex = 8
@@ -83,7 +85,7 @@ func generateSlidingMoves(board *Board, startSquare, p int) {
 			}
 		}
 	}
-	board.moves = append(board.moves, slidingMoves...)
+	board.Moves = append(board.Moves, slidingMoves...)
 }
 
 func min(a, b int) int {

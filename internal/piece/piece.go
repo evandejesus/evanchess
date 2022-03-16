@@ -30,6 +30,10 @@ func GetPieceType(square int) int {
 	return square & 7
 }
 
+func IsPieceType(square int, pieceType int) bool {
+	return square&7 == pieceType
+}
+
 func IsSlidingPiece(square int) bool {
 	p := GetPieceType(square)
 	return p == Queen || p == Rook || p == Bishop
