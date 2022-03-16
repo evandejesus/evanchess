@@ -2,3 +2,4 @@ bin/
 _output/
 **/__debug_bin
 **/*.cov
+**/.DS_Store
