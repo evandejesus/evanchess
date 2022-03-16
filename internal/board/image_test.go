@@ -94,31 +94,3 @@ func TestDrawBoard(t *testing.T) {
 		}
 	})
 }
-
-func Test_getFilepathFromInt(t *testing.T) {
-	type args struct {
-		val int
-	}
-	tests := []struct {
-		name              string
-		args              args
-		wantPieceFilepath string
-	}{
-		{
-			name: "none",
-			args: args{
-				val: 0,
-			},
-			wantPieceFilepath: "",
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if gotPieceFilepath := pieceFilepathFromSquare(tt.args.val); gotPieceFilepath != tt.wantPieceFilepath {
-				t.Errorf("getFilepathFromInt() = %v, want %v", gotPieceFilepath, tt.wantPieceFilepath)
-			}
-		})
-	}
-
-}
