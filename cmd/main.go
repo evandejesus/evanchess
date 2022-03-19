@@ -19,7 +19,12 @@ func init() {
 	}
 }
 
+func setup() {
+	os.Mkdir("_output", os.ModePerm)
+}
+
 func main() {
+	setup()
 	// reader := bufio.NewReader(os.Stdin)
 
 	fmt.Println("evanchess c. 2022")
@@ -39,7 +44,7 @@ func main() {
 		/* random pawns */
 		"rnbqkbnr/p1p1pppp/8/1p1p4/P3P3/8/1PPP1PPP/RNBQKBNR w KQkq b6 0 3",
 	}
-	fen := fens[2]
+	fen := fens[3]
 
 	pos, err := board.LoadPositionFromFen(fen)
 	if err != nil {
