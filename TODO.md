@@ -1,0 +1,4 @@
+- add knight moves
+- add en passant
+- add check
+- add making move function
