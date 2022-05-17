@@ -5,9 +5,11 @@ import (
 	"image"
 	"image/color"
 	"image/draw"
-	"image/png"
 	"os"
 
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/canvas"
 	"github.com/evandejesus/evanchess/internal/piece"
 	"github.com/evandejesus/evanchess/internal/projectpath"
 )
@@ -52,12 +54,13 @@ func DrawBoard(board Board, theme Theme) error {
 			draw.Draw(boardPng, square.Bounds(), piece, image.Point{}, draw.Over)
 		}
 	}
-	f, err := os.Create(OutputFilepath())
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-	png.Encode(f, boardPng)
+	a := app.New()
+	w := a.NewWindow("Images")
+	img := canvas.NewImageFromImage(boardPng)
+	w.SetContent(img)
+	w.Resize(fyne.NewSize(640, 640))
+
+	w.ShowAndRun()
 
 	return nil
 }
