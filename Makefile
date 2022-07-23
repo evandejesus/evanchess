@@ -18,7 +18,7 @@ RESET  := $(shell tput -Txterm sgr0)
 all: help
 
 ## Run:
-run: 
+run: ## Run project
 	GO111MODULE=on $(GOCMD) run ./cmd/*
 
 ## Build:
