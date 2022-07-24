@@ -41,9 +41,7 @@ type Move struct {
 	targetSquare int
 }
 
-/*
-GenerateMoves finds each piece of the color to play and adds their possible moves to a list.
-*/
+// GenerateMoves finds each piece of the color to play and adds their possible moves to a list.
 func GenerateMoves(board *Board) {
 	precomputedMoveData()
 	for i := 0; i < 64; i++ {
@@ -135,10 +133,9 @@ func generateKingMoves(board *Board, startSquare int) {
 
 }
 
-/*
-PrintMoves prints each move in moves to a file with the format <target>-<destination>.
-Expects an existing directory _output
-*/
+// PrintMoves prints each move in moves to a file with the format <target>-<destination>.
+// Expects an existing directory _output
+
 func PrintMoves(moves []Move) {
 	f, err := os.Create(fmt.Sprintf("%s/_output/moves.log", projectpath.Root))
 	if err != nil {

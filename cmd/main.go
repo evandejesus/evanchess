@@ -4,8 +4,11 @@ import (
 	"fmt"
 	"os"
 
+	"fyne.io/fyne/v2"
 	"github.com/evandejesus/evanchess/internal/board"
 )
+
+var keys []*fyne.KeyEvent
 
 func setup() {
 	// create output directory for moves log
@@ -35,16 +38,32 @@ func main() {
 	}
 	fen := fens[3]
 
-	fmt.Println("generating board...")
+	fmt.Println("loading position from FEN...")
 	pos, err := board.LoadPositionFromFen(fen)
 	if err != nil {
 		panic(err)
 	}
-	if err = board.DrawBoard(pos, board.Dusk); err != nil {
+
+	fmt.Println("generating moves...")
+	board.GenerateMoves(&pos)
+	fmt.Println("moves generated")
+
+	if w, err := board.DrawBoard(pos, board.Dusk); err != nil {
 		panic(err)
 	} else {
-		// board.GenerateMoves(&pos)
-		fmt.Println("board generated")
+		w.Canvas().SetOnTypedKey(keyHandler)
+		w.ShowAndRun()
 	}
+}
 
+func keyHandler(k *fyne.KeyEvent) {
+	keys = append(keys, k)
+	if k.Name == "Return" {
+		for _, key := range keys[:len(keys)-1] {
+			fmt.Print(key.Name)
+		}
+		fmt.Println("")
+
+		keys = nil
+	}
 }

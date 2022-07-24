@@ -15,13 +15,14 @@ import (
 )
 
 var squareSize int = 60
+var boardSize float32 = 480
 
 func Square(x, y, length int) *image.Rectangle {
 	square := image.Rect(x, y, x+length, y+length)
 	return &square
 }
 
-func DrawBoard(board Board, theme Theme) error {
+func DrawBoard(board Board, theme Theme) (fyne.Window, error) {
 	boardPng := image.NewRGBA(image.Rect(0, 0, 8*squareSize, 8*squareSize))
 
 	for file := 0; file < 8; file++ {
@@ -43,13 +44,13 @@ func DrawBoard(board Board, theme Theme) error {
 			pieceFilepath := pieceFilepathFromSquare(pieceVal)
 			pieceFile, err := os.Open(pieceFilepath)
 			if err != nil {
-				return err
+				return nil, err
 			}
 			defer pieceFile.Close()
 
 			piece, _, err := image.Decode(pieceFile)
 			if err != nil {
-				return err
+				return nil, err
 			}
 			draw.Draw(boardPng, square.Bounds(), piece, image.Point{}, draw.Over)
 		}
@@ -58,11 +59,9 @@ func DrawBoard(board Board, theme Theme) error {
 	w := a.NewWindow("Images")
 	img := canvas.NewImageFromImage(boardPng)
 	w.SetContent(img)
-	w.Resize(fyne.NewSize(640, 640))
+	w.Resize(fyne.NewSize(boardSize, boardSize))
 
-	w.ShowAndRun()
-
-	return nil
+	return w, nil
 }
 
 func pieceFilepathFromSquare(square int) (pieceFilepath string) {
