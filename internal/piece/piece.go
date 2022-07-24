@@ -19,6 +19,7 @@ const (
 	Black int = 16
 )
 
+// IsColor returns whether the square is white or black based on position in board array
 func IsColor(square int, color int) bool {
 	return square&color == color
 }

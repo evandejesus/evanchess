@@ -14,7 +14,7 @@ import (
 	"github.com/evandejesus/evanchess/internal/projectpath"
 )
 
-var size int = 60
+var squareSize int = 60
 
 func Square(x, y, length int) *image.Rectangle {
 	square := image.Rect(x, y, x+length, y+length)
@@ -22,11 +22,11 @@ func Square(x, y, length int) *image.Rectangle {
 }
 
 func DrawBoard(board Board, theme Theme) error {
-	boardPng := image.NewRGBA(image.Rect(0, 0, 8*size, 8*size))
+	boardPng := image.NewRGBA(image.Rect(0, 0, 8*squareSize, 8*squareSize))
 
 	for file := 0; file < 8; file++ {
 		for rank := 0; rank < 8; rank++ {
-			square := Square(size*rank, size*file, size)
+			square := Square(squareSize*rank, squareSize*file, squareSize)
 			var bg color.Color
 			if (file+rank)%2 == 0 {
 				bg = theme.light
@@ -66,6 +66,8 @@ func DrawBoard(board Board, theme Theme) error {
 }
 
 func pieceFilepathFromSquare(square int) (pieceFilepath string) {
+	// return the location of the piece image file from numerical value
+
 	isWhite := piece.IsColor(square, piece.White)
 	pieceType := piece.GetPieceType(square)
 
@@ -100,6 +102,7 @@ func pieceFilepathFromSquare(square int) (pieceFilepath string) {
 	return fmt.Sprintf("%s/assets/%s", projectpath.Root, pieceFilepath)
 }
 
+// OutputFilepath returns the absolute file location of the board image
 func OutputFilepath() string {
 	return fmt.Sprintf("%s/_output/board.png", projectpath.Root)
 }

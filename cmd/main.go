@@ -1,25 +1,14 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"os"
 
 	"github.com/evandejesus/evanchess/internal/board"
 )
 
-const path = "_output"
-
-func init() {
-	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
-		err := os.Mkdir(path, 0755)
-		if err != nil {
-			fmt.Println(err)
-		}
-	}
-}
-
 func setup() {
+	// create output directory for moves log
 	os.Mkdir("_output", os.ModePerm)
 }
 
@@ -46,11 +35,12 @@ func main() {
 	}
 	fen := fens[3]
 
+	fmt.Println("generating board...")
 	pos, err := board.LoadPositionFromFen(fen)
 	if err != nil {
 		panic(err)
 	}
-	if err = board.DrawBoard(pos, board.Classic); err != nil {
+	if err = board.DrawBoard(pos, board.Dusk); err != nil {
 		panic(err)
 	} else {
 		// board.GenerateMoves(&pos)
