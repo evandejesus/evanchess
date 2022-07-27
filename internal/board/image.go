@@ -7,15 +7,12 @@ import (
 	"image/draw"
 	"os"
 
-	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/canvas"
 	"github.com/evandejesus/evanchess/internal/piece"
 	"github.com/evandejesus/evanchess/internal/projectpath"
 )
 
 var squareSize int = 60
-var boardSize float32 = 480
 
 // Square returns a canvas image of a chess board square.
 func Square(x, y, length int) *image.Rectangle {
@@ -24,7 +21,7 @@ func Square(x, y, length int) *image.Rectangle {
 }
 
 // DrawBoard creates a fyne Canvas of a standard board representation.
-func DrawBoard(board Board, theme Theme) (fyne.Window, error) {
+func DrawBoard(board Board, theme Theme) (*canvas.Image, error) {
 	boardPng := image.NewRGBA(image.Rect(0, 0, 8*squareSize, 8*squareSize))
 
 	for file := 0; file < 8; file++ {
@@ -57,13 +54,11 @@ func DrawBoard(board Board, theme Theme) (fyne.Window, error) {
 			draw.Draw(boardPng, square.Bounds(), piece, image.Point{}, draw.Over)
 		}
 	}
-	a := app.New()
-	w := a.NewWindow("Images")
 	img := canvas.NewImageFromImage(boardPng)
-	w.SetContent(img)
-	w.Resize(fyne.NewSize(boardSize, boardSize))
+	// w.SetContent(img)
+	// w.Resize(fyne.NewSize(boardSize, boardSize))
 
-	return w, nil
+	return img, nil
 }
 
 // return the location of the piece image file from numerical value

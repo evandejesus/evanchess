@@ -75,8 +75,8 @@ func generatePawnMoves(board *Board, startSquare int) []Move {
 
 	// forward white move
 	if board.ColorToMove == piece.White && getRank(startSquare) < 7 {
-		// left capture
 		if getFile(startSquare) > 0 && piece.IsOpponentColor(board.Squares[startSquare+7], board.ColorToMove) {
+			// left capture
 			pawnMoves = append(pawnMoves, Move{startSquare: startSquare, targetSquare: startSquare + 7, pieceType: piece.Pawn})
 		}
 		if getFile(startSquare) < 7 && piece.IsOpponentColor(board.Squares[startSquare+9], board.ColorToMove) {
@@ -84,8 +84,41 @@ func generatePawnMoves(board *Board, startSquare int) []Move {
 			pawnMoves = append(pawnMoves, Move{startSquare: startSquare, targetSquare: startSquare + 9, pieceType: piece.Pawn})
 		}
 		if board.Squares[startSquare+8] == 0 {
-			// forward one
-			pawnMoves = append(pawnMoves, Move{startSquare: startSquare, targetSquare: startSquare + 8, pieceType: piece.Pawn})
+			if getRank(startSquare) == 6 {
+				// promotion
+				pawnMoves = append(pawnMoves, Move{startSquare: startSquare, targetSquare: startSquare + 8, pieceType: piece.Queen})
+
+			} else {
+				// forward one
+				pawnMoves = append(pawnMoves, Move{startSquare: startSquare, targetSquare: startSquare + 8, pieceType: piece.Pawn})
+			}
+		}
+	}
+
+	// forward black move
+	if board.ColorToMove == piece.Black && getRank(startSquare) > 0 {
+		if getFile(startSquare) > 0 && piece.IsOpponentColor(board.Squares[startSquare-9], board.ColorToMove) {
+			// left capture
+			pawnMoves = append(pawnMoves, Move{startSquare: startSquare, targetSquare: startSquare - 9, pieceType: piece.Pawn})
+		}
+		if getFile(startSquare) < 7 && piece.IsOpponentColor(board.Squares[startSquare-7], board.ColorToMove) {
+			// right capture
+			pawnMoves = append(pawnMoves, Move{startSquare: startSquare, targetSquare: startSquare - 7, pieceType: piece.Pawn})
+		}
+		if board.Squares[startSquare-8] == 0 {
+
+			if getRank(startSquare) == 1 {
+				// promotion
+				pawnMoves = append(pawnMoves, Move{startSquare: startSquare, targetSquare: startSquare - 8, pieceType: piece.Queen})
+				// pawnMoves = append(pawnMoves, Move{startSquare: startSquare, targetSquare: startSquare - 8, pieceType: piece.Rook})
+				// pawnMoves = append(pawnMoves, Move{startSquare: startSquare, targetSquare: startSquare - 8, pieceType: piece.Bishop})
+				// pawnMoves = append(pawnMoves, Move{startSquare: startSquare, targetSquare: startSquare - 8, pieceType: piece.Knight})
+
+			} else {
+				// forward one
+				pawnMoves = append(pawnMoves, Move{startSquare: startSquare, targetSquare: startSquare - 8, pieceType: piece.Pawn})
+			}
+
 		}
 	}
 
@@ -175,22 +208,20 @@ func generateKnightMoves(board *Board, startSquare int) []Move {
 }
 
 // MakeMove updates the board position with the provided move and sets the colorToMove to the opposite color.
-func MakeMove(move Move, board *Board) {
+func MakeMove(move Move, b *Board) {
 
 	// move piece to new square, replace existing piece
-	p := board.Squares[move.startSquare]
-	board.Squares[move.startSquare] = 0
-	board.Squares[move.targetSquare] = p
+	b.Squares[move.startSquare] = 0
+	b.Squares[move.targetSquare] = move.pieceType | b.ColorToMove
 
 	// switch sides
-	if board.ColorToMove == piece.White {
-		board.ColorToMove = piece.Black
+	if b.ColorToMove == piece.White {
+		b.ColorToMove = piece.Black
 	} else {
-		board.ColorToMove = piece.White
-		board.FullMoves += 1
+		b.ColorToMove = piece.White
+		b.FullMoves += 1
 	}
-	board.HalfMoves += 1
-	// fmt.Println(printMove(move))
+	b.HalfMoves += 1
 }
 
 // PrintMoves prints each move in moves to a file with the format <target>-<destination>.

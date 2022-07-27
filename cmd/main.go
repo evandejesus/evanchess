@@ -6,10 +6,15 @@ import (
 	"os"
 
 	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/canvas"
 	"github.com/evandejesus/evanchess/internal/board"
+	"github.com/evandejesus/evanchess/internal/piece"
 )
 
 var keys []*fyne.KeyEvent
+var boardSize float32 = 480
+var img *canvas.Image
 
 func setup() {
 
@@ -21,6 +26,63 @@ func main() {
 	setup()
 
 	fmt.Println("evanchess c. 2022")
+	a := app.New()
+	w := a.NewWindow("Images")
+	fen := getFen(0)
+
+	fmt.Println("loading position from FEN...")
+	pos, err := board.LoadPositionFromFen(fen)
+	if err != nil {
+		panic(err)
+	}
+
+	// Draw Board
+	if img, err = board.DrawBoard(pos, board.Dusk); err != nil {
+		panic(err)
+	}
+
+	// go func() {
+	// 	fmt.Println("start")
+	// 	// Generate first ply moves
+	// 	fmt.Println("generating moves...")
+	// 	moves := board.GenerateMoves(&pos)
+	// 	board.PrintMoves(moves)
+	// 	fmt.Println("moves generated")
+
+	// 	time.Sleep(1 * time.Second)
+
+	// 	// make random move
+	// 	fmt.Println("end")
+
+	// }()
+
+	w.SetContent(img)
+	w.Canvas().SetOnTypedKey(func(*fyne.KeyEvent) {
+		moves := board.GenerateMoves(&pos)
+		if len(moves) == 0 {
+			return
+		}
+
+		board.MakeMove(moves[rand.Int()%len(moves)], &pos)
+
+		if img, err = board.DrawBoard(pos, board.Dusk); err != nil {
+			panic(err)
+		}
+		w.SetContent(img)
+
+		var color string
+		if pos.ColorToMove == piece.White {
+			color = "white"
+		} else {
+			color = "black"
+		}
+		fmt.Println(color, "to move")
+	})
+	w.Resize(fyne.NewSize(boardSize, boardSize))
+	w.ShowAndRun()
+}
+
+func getFen(i int) string {
 	fens := []string{
 		/* starting position */
 		"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
@@ -37,41 +99,5 @@ func main() {
 		/* random pawns */
 		"rnbqkbnr/p1p1pppp/8/1p1p4/P3P3/8/1PPP1PPP/RNBQKBNR w KQkq b6 0 3",
 	}
-	fen := fens[3]
-
-	fmt.Println("loading position from FEN...")
-	pos, err := board.LoadPositionFromFen(fen)
-	if err != nil {
-		panic(err)
-	}
-
-	// Generate first ply moves
-	fmt.Println("generating moves...")
-	moves := board.GenerateMoves(&pos)
-	board.PrintMoves(moves)
-	fmt.Println("moves generated")
-
-	// make random move
-	board.MakeMove(moves[rand.Int()%len(moves)], &pos)
-
-	// Draw Board
-	if w, err := board.DrawBoard(pos, board.Dusk); err != nil {
-		panic(err)
-	} else {
-		w.Canvas().SetOnTypedKey(keyHandler)
-		w.ShowAndRun()
-	}
-}
-
-// keyHandler attaches functionality to the fyne board window
-func keyHandler(k *fyne.KeyEvent) {
-	keys = append(keys, k)
-	if k.Name == "Return" {
-		for _, key := range keys[:len(keys)-1] {
-			fmt.Print(key.Name)
-		}
-		fmt.Println("")
-
-		keys = nil
-	}
+	return fens[i]
 }
