@@ -221,7 +221,14 @@ func MakeMove(move Move, b *Board) {
 		b.ColorToMove = piece.White
 		b.FullMoves += 1
 	}
-	b.HalfMoves += 1
+
+	// TODO: do not reset half moves when pawn is promoted
+	if move.pieceType == piece.Pawn {
+		b.HalfMoves = 0
+	} else {
+		b.HalfMoves += 1
+
+	}
 }
 
 // PrintMoves prints each move in moves to a file with the format <target>-<destination>.
