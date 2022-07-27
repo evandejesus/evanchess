@@ -1,7 +1,6 @@
 package board
 
 import (
-	"errors"
 	"image"
 	"os"
 	"reflect"
@@ -59,38 +58,40 @@ func setup(t testing.TB) func(t testing.TB) {
 	}
 }
 
-func TestDrawBoard(t *testing.T) {
-	type args struct {
-		board Board
-		theme Theme
-	}
-	pos, _ := LoadPositionFromFen("5rk1/4R1pp/3q1p2/p1p2P2/P3Q2P/5p2/2P2PPK/8 w - - 0 34")
-	tests := []struct {
-		name string
-		args args
-	}{
-		{
-			name: "random fen",
-			args: args{
-				board: pos,
-				theme: Sandcastle,
-			},
-		},
-	}
+// Deprecated: no longer generating board png
 
-	teardown := setup(t)
-	defer teardown(t)
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			DrawBoard(tt.args.board, tt.args.theme)
-		})
-	}
+// func TestDrawBoard(t *testing.T) {
+// 	type args struct {
+// 		board Board
+// 		theme Theme
+// 	}
+// 	pos, _ := LoadPositionFromFen("5rk1/4R1pp/3q1p2/p1p2P2/P3Q2P/5p2/2P2PPK/8 w - - 0 34")
+// 	tests := []struct {
+// 		name string
+// 		args args
+// 	}{
+// 		{
+// 			name: "random fen",
+// 			args: args{
+// 				board: pos,
+// 				theme: Sandcastle,
+// 			},
+// 		},
+// 	}
 
-	// board image successfully created
-	t.Run("created file", func(t *testing.T) {
-		if _, err := os.Stat(OutputFilepath()); errors.Is(err, os.ErrNotExist) {
-			t.Error(err.Error())
-			t.Errorf("file \"" + OutputFilepath() + "\" not created")
-		}
-	})
-}
+// 	teardown := setup(t)
+// 	defer teardown(t)
+// 	for _, tt := range tests {
+// 		t.Run(tt.name, func(t *testing.T) {
+// 			DrawBoard(tt.args.board, tt.args.theme)
+// 		})
+// 	}
+
+// 	// board image successfully created
+// 	t.Run("created file", func(t *testing.T) {
+// 		if _, err := os.Stat(OutputFilepath()); errors.Is(err, os.ErrNotExist) {
+// 			t.Error(err.Error())
+// 			t.Errorf("file \"" + OutputFilepath() + "\" not created")
+// 		}
+// 	})
+// }

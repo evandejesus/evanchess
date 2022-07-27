@@ -9,11 +9,10 @@ import (
 	piece "github.com/evandejesus/evanchess/internal/piece"
 )
 
-// a Board represents the location of all the piego ces on the chess board using an array of length 64.
+// a Board represents the location of all the pieces on the chess board using an array of length 64.
 // It also stores the possible moves as well as the color to move.
 type Board struct {
 	Squares     [64]int
-	Moves       []Move
 	ColorToMove int
 }
 
@@ -69,9 +68,6 @@ func LoadPositionFromFen(fen string) (board Board, err error) {
 			}
 		}
 	}
-
-	// Put next move's possibilities in Board object
-	GenerateMoves(&board)
 
 	return board, nil
 }

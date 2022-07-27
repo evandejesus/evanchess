@@ -21,15 +21,17 @@ const (
 	Black int = 16
 )
 
-// IsColor returns whether the square is white or black based on position in board array
+// IsColor returns whether the piece is white or black based on position in board array
 func IsColor(square int, color int) bool {
 	return square&color == color
 }
+
+// IsOpponentColor returns whether the piece is the opponent's color
 func IsOpponentColor(square int, color int) bool {
 	return square != 0 && square&color == 0
 }
 
-// GetPieceType returns whether piece is knight, bishop, etc.
+// GetPieceType returns whether piece is knight, bishop, etc
 func GetPieceType(square int) int {
 	return square & 7
 }

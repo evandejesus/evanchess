@@ -26,9 +26,6 @@ func TestLoadPositionFromFen(t *testing.T) {
 				Squares: [64]int{
 					0, 14, 20, 0, 0, 0, 0, 0, 18, 22, 10, 0, 17, 0, 0, 0, 0, 0, 18, 0, 12, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0, 10, 19, 0, 18, 0, 0, 0, 0, 0, 18, 0, 11, 0, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				},
-				Moves: []Move{
-					{startSquare: 2, targetSquare: 11}, {startSquare: 2, targetSquare: 20}, {startSquare: 9, targetSquare: 17}, {startSquare: 9, targetSquare: 25}, {startSquare: 9, targetSquare: 1}, {startSquare: 9, targetSquare: 10}, {startSquare: 9, targetSquare: 16}, {startSquare: 9, targetSquare: 0}, {startSquare: 33, targetSquare: 40}, {startSquare: 33, targetSquare: 26}, {startSquare: 33, targetSquare: 19}, {startSquare: 33, targetSquare: 24},
-				},
 				ColorToMove: piece.Black,
 			},
 			wantErr: false,

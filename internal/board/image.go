@@ -17,11 +17,13 @@ import (
 var squareSize int = 60
 var boardSize float32 = 480
 
+// Square returns a canvas image of a chess board square.
 func Square(x, y, length int) *image.Rectangle {
 	square := image.Rect(x, y, x+length, y+length)
 	return &square
 }
 
+// DrawBoard creates a fyne Canvas of a standard board representation.
 func DrawBoard(board Board, theme Theme) (fyne.Window, error) {
 	boardPng := image.NewRGBA(image.Rect(0, 0, 8*squareSize, 8*squareSize))
 
@@ -64,8 +66,8 @@ func DrawBoard(board Board, theme Theme) (fyne.Window, error) {
 	return w, nil
 }
 
+// return the location of the piece image file from numerical value
 func pieceFilepathFromSquare(square int) (pieceFilepath string) {
-	// return the location of the piece image file from numerical value
 
 	isWhite := piece.IsColor(square, piece.White)
 	pieceType := piece.GetPieceType(square)
@@ -102,6 +104,7 @@ func pieceFilepathFromSquare(square int) (pieceFilepath string) {
 }
 
 // OutputFilepath returns the absolute file location of the board image
+// *Deprecated*
 func OutputFilepath() string {
 	return fmt.Sprintf("%s/_output/board.png", projectpath.Root)
 }

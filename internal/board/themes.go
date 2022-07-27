@@ -6,6 +6,7 @@ package board
 
 import "image/color"
 
+//  Theme is a chess board color scheme giving colors for each player.
 type Theme struct {
 	light, dark color.RGBA
 }

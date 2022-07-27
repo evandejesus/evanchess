@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"os"
 
 	"fyne.io/fyne/v2"
@@ -11,13 +12,13 @@ import (
 var keys []*fyne.KeyEvent
 
 func setup() {
+
 	// create output directory for moves log
 	os.Mkdir("_output", os.ModePerm)
 }
 
 func main() {
 	setup()
-	// reader := bufio.NewReader(os.Stdin)
 
 	fmt.Println("evanchess c. 2022")
 	fens := []string{
@@ -44,10 +45,16 @@ func main() {
 		panic(err)
 	}
 
+	// Generate first ply moves
 	fmt.Println("generating moves...")
-	board.GenerateMoves(&pos)
+	moves := board.GenerateMoves(&pos)
+	board.PrintMoves(moves)
 	fmt.Println("moves generated")
 
+	// make random move
+	board.MakeMove(moves[rand.Int()%len(moves)], &pos)
+
+	// Draw Board
 	if w, err := board.DrawBoard(pos, board.Dusk); err != nil {
 		panic(err)
 	} else {
@@ -56,6 +63,7 @@ func main() {
 	}
 }
 
+// keyHandler attaches functionality to the fyne board window
 func keyHandler(k *fyne.KeyEvent) {
 	keys = append(keys, k)
 	if k.Name == "Return" {

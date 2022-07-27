@@ -12,6 +12,7 @@ import (
 var directionOffsets = []int{8, -8, -1, 1, 7, -7, 9, -9}
 var numSquaresToEdge [64][]int
 
+// Generate matrix of available squares in each direction from each starting square
 func precomputedMoveData() {
 
 	for file := 0; file < 8; file++ {
@@ -36,52 +37,62 @@ func precomputedMoveData() {
 	}
 }
 
+// Move is a representation of a chess move, including start, target, type of piece, and whether the move is a capture.
 type Move struct {
 	startSquare  int
 	targetSquare int
+	pieceType    int
+	// isCapture    bool
 }
 
 // GenerateMoves finds each piece of the color to play and adds their possible moves to a list.
-func GenerateMoves(board *Board) {
+// Depends on function to compute all reachable squares from each square.
+func GenerateMoves(board *Board) []Move {
+	var moves []Move
+
 	precomputedMoveData()
+
+	//
 	for i := 0; i < 64; i++ {
 		p := board.Squares[i]
 		if piece.IsColor(p, board.ColorToMove) {
 			if piece.IsSlidingPiece(p) {
-				generateSlidingMoves(board, i, p)
+				moves = append(moves, generateSlidingMoves(board, i, p)...)
 			} else if piece.IsPieceType(p, piece.Pawn) {
-				generatePawnMoves(board, i)
+				moves = append(moves, generatePawnMoves(board, i)...)
 			} else if piece.IsPieceType(p, piece.King) {
-				generateKingMoves(board, i)
+				moves = append(moves, generateKingMoves(board, i)...)
+			} else if piece.IsPieceType(p, piece.Knight) {
+				moves = append(moves, generateKnightMoves(board, i)...)
 			}
 		}
 	}
-	PrintMoves(board.Moves)
+	return moves
 }
 
-func generatePawnMoves(board *Board, startSquare int) {
+func generatePawnMoves(board *Board, startSquare int) []Move {
 	var pawnMoves []Move
 
 	// forward white move
 	if board.ColorToMove == piece.White && getRank(startSquare) < 7 {
 		// left capture
 		if getFile(startSquare) > 0 && piece.IsOpponentColor(board.Squares[startSquare+7], board.ColorToMove) {
-			pawnMoves = append(pawnMoves, Move{startSquare: startSquare, targetSquare: startSquare + 7})
+			pawnMoves = append(pawnMoves, Move{startSquare: startSquare, targetSquare: startSquare + 7, pieceType: piece.Pawn})
 		}
 		if getFile(startSquare) < 7 && piece.IsOpponentColor(board.Squares[startSquare+9], board.ColorToMove) {
 			// right capture
-			pawnMoves = append(pawnMoves, Move{startSquare: startSquare, targetSquare: startSquare + 9})
+			pawnMoves = append(pawnMoves, Move{startSquare: startSquare, targetSquare: startSquare + 9, pieceType: piece.Pawn})
 		}
 		if board.Squares[startSquare+8] == 0 {
 			// forward one
-			pawnMoves = append(pawnMoves, Move{startSquare: startSquare, targetSquare: startSquare + 8})
+			pawnMoves = append(pawnMoves, Move{startSquare: startSquare, targetSquare: startSquare + 8, pieceType: piece.Pawn})
 		}
 	}
 
-	board.Moves = append(board.Moves, pawnMoves...)
+	return pawnMoves
 }
 
-func generateSlidingMoves(board *Board, startSquare, p int) {
+func generateSlidingMoves(board *Board, startSquare, p int) []Move {
 	var slidingMoves []Move
 
 	var startDirIndex, endDirIndex int
@@ -103,11 +114,12 @@ func generateSlidingMoves(board *Board, startSquare, p int) {
 		for n := 0; n < numSquaresToEdge[startSquare][directionIndex]; n++ {
 			targetSquare := startSquare + directionOffsets[directionIndex]*(n+1)
 			pieceOnTargetSquare := board.Squares[targetSquare]
+
 			// stop looking if friendly piece is in the way
 			if piece.IsColor(pieceOnTargetSquare, board.ColorToMove) {
 				break
 			}
-			slidingMoves = append(slidingMoves, Move{startSquare: startSquare, targetSquare: targetSquare})
+			slidingMoves = append(slidingMoves, Move{startSquare: startSquare, targetSquare: targetSquare, pieceType: piece.GetPieceType(p)})
 
 			// stop looking if enemy piece is in the way
 			if piece.IsOpponentColor(pieceOnTargetSquare, board.ColorToMove) {
@@ -115,27 +127,64 @@ func generateSlidingMoves(board *Board, startSquare, p int) {
 			}
 		}
 	}
-	board.Moves = append(board.Moves, slidingMoves...)
+	return slidingMoves
 }
 
-func generateKingMoves(board *Board, startSquare int) {
+func generateKingMoves(board *Board, startSquare int) []Move {
 	var kingMoves []Move
 	for directionIndex := 0; directionIndex < 8; directionIndex++ {
 		if numSquaresToEdge[startSquare][directionIndex] > 0 {
 			targetSquare := startSquare + directionOffsets[directionIndex]
 			pieceOnTargetSquare := board.Squares[targetSquare]
 			if !piece.IsColor(pieceOnTargetSquare, board.ColorToMove) {
-				kingMoves = append(kingMoves, Move{startSquare: startSquare, targetSquare: targetSquare})
+				kingMoves = append(kingMoves, Move{startSquare: startSquare, targetSquare: targetSquare, pieceType: piece.King})
 			}
 		}
 	}
-	board.Moves = append(board.Moves, kingMoves...)
+	return kingMoves
+}
 
+func generateKnightMoves(board *Board, startSquare int) []Move {
+	var knightMoves []Move
+
+	var targetSquares []int
+	if getFile(startSquare) >= 1 {
+		targetSquares = append(targetSquares, startSquare+15)
+		targetSquares = append(targetSquares, startSquare-17)
+	}
+	if getFile(startSquare) >= 2 {
+		targetSquares = append(targetSquares, startSquare+6)
+		targetSquares = append(targetSquares, startSquare-10)
+	}
+	if getFile(startSquare) <= 5 {
+		targetSquares = append(targetSquares, startSquare+10)
+		targetSquares = append(targetSquares, startSquare-6)
+	}
+	if getFile(startSquare) <= 6 {
+		targetSquares = append(targetSquares, startSquare+17)
+		targetSquares = append(targetSquares, startSquare-15)
+	}
+
+	for _, t := range targetSquares {
+		if t > 0 && t < 64 && !piece.IsColor(board.Squares[t], board.ColorToMove) {
+			knightMoves = append(knightMoves, Move{startSquare: startSquare, targetSquare: t, pieceType: piece.Knight})
+
+		}
+	}
+	return knightMoves
+}
+
+// MakeMove updates the board position with the provided move and sets the colorToMove to the opposite color.
+func MakeMove(move Move, board *Board) {
+	piece := board.Squares[move.startSquare]
+	board.Squares[move.startSquare] = 0
+	board.Squares[move.targetSquare] = piece
+	board.ColorToMove = (board.ColorToMove + 1) % 2
+	fmt.Println(printMove(move))
 }
 
 // PrintMoves prints each move in moves to a file with the format <target>-<destination>.
 // Expects an existing directory _output
-
 func PrintMoves(moves []Move) {
 	f, err := os.Create(fmt.Sprintf("%s/_output/moves.log", projectpath.Root))
 	if err != nil {
@@ -145,11 +194,15 @@ func PrintMoves(moves []Move) {
 
 	w := bufio.NewWriter(f)
 	for _, move := range moves {
-		str := fmt.Sprintf("%c%d-%c%d\n", 97+move.startSquare%8, 1+move.startSquare/8,
-			97+move.targetSquare%8, 1+move.targetSquare/8)
+		str := printMove(move)
 		w.WriteString(str)
 	}
 	w.Flush()
+}
+
+func printMove(move Move) string {
+	return fmt.Sprintf("%c%d-%c%d\n", 97+move.startSquare%8, 1+move.startSquare/8,
+		97+move.targetSquare%8, 1+move.targetSquare/8)
 }
 
 func min(a, b int) int {

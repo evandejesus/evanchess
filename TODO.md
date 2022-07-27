@@ -1,5 +1,5 @@
-- add knight moves
+- add knight moves [x]
 - add en passant
 - add check
     - keep track of opponents attacking squares
-- add making move function
+- add making move function [x]
