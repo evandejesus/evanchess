@@ -1,5 +1,4 @@
-- add knight moves [x]
 - add en passant
 - add check
     - keep track of opponents attacking squares
-- add making move function [x]
+- add modification of Move object for adding capture info
