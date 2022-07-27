@@ -3,6 +3,7 @@ package board
 
 import (
 	"errors"
+	"strconv"
 	"strings"
 	"unicode"
 
@@ -14,6 +15,8 @@ import (
 type Board struct {
 	Squares     [64]int
 	ColorToMove int
+	HalfMoves   int
+	FullMoves   int
 }
 
 var pieceTypeFromSymbol = map[rune]int{
@@ -27,16 +30,26 @@ var pieceTypeFromSymbol = map[rune]int{
 
 // LoadPositionFromFen creates a Board object from FEN notation.
 func LoadPositionFromFen(fen string) (board Board, err error) {
+	fenArray := strings.Split(fen, " ")
 
 	// Determine color to move from FEN
-	if color := strings.Split(fen, " ")[1]; color == "w" {
+	if color := fenArray[1]; color == "w" {
 		board.ColorToMove = piece.White
 	} else if color == "b" {
 		board.ColorToMove = piece.Black
 	}
 
+	board.HalfMoves, err = strconv.Atoi(fenArray[4])
+	if err != nil {
+		return Board{}, err
+	}
+	board.FullMoves, err = strconv.Atoi(fenArray[5])
+	if err != nil {
+		return Board{}, err
+	}
+
 	// Populate Board object with pieces
-	fenBoard := strings.Split(fen, " ")[0]
+	fenBoard := fenArray[0]
 	file := 0
 	rank := 7
 	for _, char := range fenBoard {

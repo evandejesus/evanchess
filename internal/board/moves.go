@@ -176,11 +176,21 @@ func generateKnightMoves(board *Board, startSquare int) []Move {
 
 // MakeMove updates the board position with the provided move and sets the colorToMove to the opposite color.
 func MakeMove(move Move, board *Board) {
-	piece := board.Squares[move.startSquare]
+
+	// move piece to new square, replace existing piece
+	p := board.Squares[move.startSquare]
 	board.Squares[move.startSquare] = 0
-	board.Squares[move.targetSquare] = piece
-	board.ColorToMove = (board.ColorToMove + 1) % 2
-	fmt.Println(printMove(move))
+	board.Squares[move.targetSquare] = p
+
+	// switch sides
+	if board.ColorToMove == piece.White {
+		board.ColorToMove = piece.Black
+	} else {
+		board.ColorToMove = piece.White
+		board.FullMoves += 1
+	}
+	board.HalfMoves += 1
+	// fmt.Println(printMove(move))
 }
 
 // PrintMoves prints each move in moves to a file with the format <target>-<destination>.
