@@ -4,20 +4,19 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/canvas"
 	"github.com/evandejesus/evanchess/internal/board"
-	"github.com/evandejesus/evanchess/internal/piece"
 )
 
-var keys []*fyne.KeyEvent
 var boardSize float32 = 480
 var img *canvas.Image
 
 func setup() {
-
+	rand.Seed(time.Now().UnixNano())
 	// create output directory for moves log
 	os.Mkdir("_output", os.ModePerm)
 }
@@ -58,25 +57,25 @@ func main() {
 
 	w.SetContent(img)
 	w.Canvas().SetOnTypedKey(func(*fyne.KeyEvent) {
+		start := time.Now()
 		moves := board.GenerateMoves(&pos)
+		duration := time.Since(start)
+		fmt.Println("generated in ", duration)
+		board.PrintMoves(moves)
 		if len(moves) == 0 {
 			return
 		}
 
 		board.MakeMove(moves[rand.Int()%len(moves)], &pos)
 
+		// for _, move := range moves {
+		// 	board.MakeMove(move, &pos)
+		// }
+
 		if img, err = board.DrawBoard(pos, board.Dusk); err != nil {
 			panic(err)
 		}
 		w.SetContent(img)
-
-		var color string
-		if pos.ColorToMove == piece.White {
-			color = "white"
-		} else {
-			color = "black"
-		}
-		fmt.Println(color, "to move")
 	})
 	w.Resize(fyne.NewSize(boardSize, boardSize))
 	w.ShowAndRun()

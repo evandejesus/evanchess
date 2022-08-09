@@ -17,6 +17,7 @@ type Board struct {
 	ColorToMove int
 	HalfMoves   int
 	FullMoves   int
+	MoveHistory []Move
 }
 
 var pieceTypeFromSymbol = map[rune]int{

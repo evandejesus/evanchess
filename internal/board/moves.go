@@ -209,6 +209,7 @@ func generateKnightMoves(board *Board, startSquare int) []Move {
 
 // MakeMove updates the board position with the provided move and sets the colorToMove to the opposite color.
 func MakeMove(move Move, b *Board) {
+	b.MoveHistory = append(b.MoveHistory, move)
 
 	// move piece to new square, replace existing piece
 	b.Squares[move.startSquare] = 0
@@ -229,6 +230,12 @@ func MakeMove(move Move, b *Board) {
 		b.HalfMoves += 1
 
 	}
+
+	fmt.Println(printMove(move))
+}
+
+// UnmakeMove resets the board to the position before the made move.
+func UnmakeMove(move Move, b *Board) {
 }
 
 // PrintMoves prints each move in moves to a file with the format <target>-<destination>.
@@ -242,14 +249,14 @@ func PrintMoves(moves []Move) {
 
 	w := bufio.NewWriter(f)
 	for _, move := range moves {
-		str := printMove(move)
+		str := printMove(move) + "\n"
 		w.WriteString(str)
 	}
 	w.Flush()
 }
 
 func printMove(move Move) string {
-	return fmt.Sprintf("%c%d-%c%d\n", 97+move.startSquare%8, 1+move.startSquare/8,
+	return fmt.Sprintf("%c%d-%c%d", 97+move.startSquare%8, 1+move.startSquare/8,
 		97+move.targetSquare%8, 1+move.targetSquare/8)
 }
 
